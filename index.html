@@ -12,12 +12,19 @@
     <div class="text-center p-4">
       <img v-bind="{ src: logoSource, title }" alt="Vue.js Logo" width="200" class="mb-4"/>
       <h1 v-html="title"></h1>
-      <h4>Nom de la tâche: {{ taskname }}</h4>      
+      <template v-if="isTaskInProgress">
+        <h4>Nom de la tâche: {{ taskname }}</h4>      
+        <h4>Tâche en cours: {{ (isTaskInProgress) ? 'Oui' : 'Non' }}</h4>
+      </template>    
     </div>
     
-    <form @submit.prevent class="p-4">
+    <form class="p-4">
         <input v-model="taskname" type="text" class="form-control" />
-        <button type="submit" class="btn btn-secondary mt-2">Démarrer</button>
+        <button @click="startTask" type="button" class="btn btn-primary mt-2">Démarrer</button>
+        <button @click="stopTask" type="button" class="btn btn-danger mt-2 mx-2">Arrêter</button>
+        <div v-show="errorMsg" class="alert alert-danger mt-2" role="alert">
+          {{ errorMsg }}
+        </div>
     </form>
 
   </div>
