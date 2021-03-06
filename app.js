@@ -1,11 +1,8 @@
-const app = Vue.createApp({
+Vue.createApp({
   data () {
     return {
-      title: 'Hello World'
+      title: 'Vue<strong>Tracker</strong>',
+      logoSource: 'https://cdn.svgporn.com/logos/vue.svg'
     }
   }
 }).mount('#app')
-
-setTimeout(() => {
-  app.$data.title = 'VueTracker'
-}, 1000)
