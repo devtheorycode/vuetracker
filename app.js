@@ -3,6 +3,9 @@ Vue.createApp({
     return {
       title: 'Vue<strong>Tracker</strong>',
       logoSource: 'https://cdn.svgporn.com/logos/vue.svg',
+      tsFormatter: Intl.DateTimeFormat('fr', { hour: '2-digit', minute: '2-digit' }),
+      tasks: [],
+      taskID: 0,
       taskname: '',
       isTaskInProgress: false,
       startTime: null,
@@ -33,9 +36,33 @@ Vue.createApp({
         return
       }
 
+      // Enregistrement de la tâche
+      this.tasks.unshift({
+        id: this.getAnID(),
+        name: this.taskname,
+        start: this.startTime,
+        end: Date.now()
+      })
+
       // Fin de la tâche
       this.isTaskInProgress = false
       this.errorMsg = null
+      this.taskname = ''
+    },
+    getAnID () {
+      this.taskID++
+      return this.taskID
+    },
+    formatTimestamp (ts) {
+      return this.tsFormatter.format(ts)
+    },
+    durationBetweenTimestamps (start, end) {
+      let seconds = Math.floor((end / 1000) - (start / 1000))
+      let minutes = Math.floor(seconds / 60)
+      const hours = Math.floor(minutes / 60)
+      seconds = seconds % 60
+      minutes = minutes % 60
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
     }
   }
 }).mount('#app')
