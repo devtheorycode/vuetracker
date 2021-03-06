@@ -8,10 +8,18 @@
 </head>
 <body>
   <div id="app">
+
     <div class="text-center p-4">
       <img v-bind="{ src: logoSource, title }" alt="Vue.js Logo" width="200" class="mb-4"/>
       <h1 v-html="title"></h1>
+      <h4>Nom de la tâche: {{ taskname }}</h4>      
     </div>
+    
+    <form @submit.prevent class="p-4">
+        <input v-model="taskname" type="text" class="form-control" />
+        <button type="submit" class="btn btn-secondary mt-2">Démarrer</button>
+    </form>
+
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/vue@next"></script>
