@@ -150,6 +150,7 @@ app.component('task-actions', {
       required: true
     }
   },
+  emits: ['restart', 'delete'],
   methods: {
     sendRestart () {
       this.$emit('restart', this.id)
