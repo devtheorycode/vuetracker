@@ -73,6 +73,13 @@ Vue.createApp({
       this.nowTime = null
       this.taskname = ''
     },
+    toggleTask () {
+      if (this.isTaskInProgress) {
+        this.stopTask()
+      } else {
+        this.startTask()
+      }
+    },
     getAnID () {
       this.taskID++
       return this.taskID

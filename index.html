@@ -17,10 +17,11 @@
       <h4>Durée en cours: {{ currentDuration }}</h4>
     </div>
     
-    <form class="p-4">
+    <form class="p-4" @submit.prevent="toggleTask">
         <input v-model="taskname" type="text" class="form-control" />
-        <button @click="startTask" type="button" class="btn btn-primary mt-2">Démarrer</button>
-        <button @click="stopTask" type="button" class="btn btn-danger mt-2 mx-2">Arrêter</button>
+        <button @click="toggleTask" type="button" class="btn" :class="isTaskInProgress ? 'btn-danger' : 'btn-primary'">
+          {{ isTaskInProgress ? 'Arrêter' : 'Démarrer' }}
+        </button>
         <div v-show="errorMsg" class="alert alert-danger mt-2" role="alert">
           {{ errorMsg }}
         </div>
