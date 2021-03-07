@@ -19,7 +19,7 @@
     
     <form class="p-4" @submit.prevent="toggleTask">
         <input v-model="taskname" type="text" class="form-control" />
-        <button @click="toggleTask" type="button" class="btn" :class="isTaskInProgress ? 'btn-danger' : 'btn-primary'">
+        <button @click="toggleTask" type="button" class="btn mt-2" :class="isTaskInProgress ? 'btn-danger' : 'btn-primary'">
           {{ isTaskInProgress ? 'Arrêter' : 'Démarrer' }}
         </button>
         <div v-show="errorMsg" class="alert alert-danger mt-2" role="alert">
@@ -35,6 +35,7 @@
             <th scope="col">Tâche</th>
             <th scope="col"></th>
             <th scope="col">Durée</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -43,6 +44,7 @@
             <td>{{ task.name }}</td>
             <td class="text-end">{{ formatTimestamp(task.start) }} - {{ formatTimestamp(task.end) }}</td>
             <td>{{ durationBetweenTimestamps(task.start, task.end) }}</td>
+            <td><task-actions :id="task.id" v-on:delete="deleteTask($event)" /></td>
           </tr>
         </tbody>
       </table>

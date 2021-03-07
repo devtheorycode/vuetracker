@@ -1,4 +1,4 @@
-Vue.createApp({
+const app = Vue.createApp({
   data () {
     return {
       title: 'Vue<strong>Tracker</strong>',
@@ -80,6 +80,16 @@ Vue.createApp({
         this.startTask()
       }
     },
+    deleteTask (taskID) {
+      let taskIndex = null
+      this.tasks.forEach((task, index) => {
+        if (task.id === taskID) {
+          taskIndex = index
+        }
+      })
+
+      this.tasks.splice(taskIndex, 1)
+    },
     getAnID () {
       this.taskID++
       return this.taskID
@@ -96,4 +106,27 @@ Vue.createApp({
       return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
     }
   }
-}).mount('#app')
+})
+
+app.component('task-actions', {
+  template: `
+    <button @click="sendDelete" type="button" class="btn btn-danger" style="line-height: 1">
+      <svg height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      </svg>
+    </button>
+  `,
+  props: {
+    id: {
+      type: Number,
+      required: true
+    }
+  },
+  methods: {
+    sendDelete () {
+      this.$emit('delete', this.id)
+    }
+  }
+})
+
+app.mount('#app')
