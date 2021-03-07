@@ -44,7 +44,7 @@
             <td>{{ task.name }}</td>
             <td class="text-end">{{ formatTimestamp(task.start) }} - {{ formatTimestamp(task.end) }}</td>
             <td>{{ durationBetweenTimestamps(task.start, task.end) }}</td>
-            <td><task-actions :id="task.id" v-on:delete="deleteTask($event)" /></td>
+            <td><task-actions :id="task.id"  @restart="restartTask($event)" @delete="deleteTask($event)" /></td>
           </tr>
         </tbody>
       </table>

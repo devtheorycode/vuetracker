@@ -81,6 +81,7 @@ const app = Vue.createApp({
       }
     },
     deleteTask (taskID) {
+      // Récupération de l'index de la tâche
       let taskIndex = null
       this.tasks.forEach((task, index) => {
         if (task.id === taskID) {
@@ -88,7 +89,28 @@ const app = Vue.createApp({
         }
       })
 
+      // Suppression de la tâche
       this.tasks.splice(taskIndex, 1)
+    },
+    restartTask (oldTaskID) {
+      // Arrêt de la tâche en cours si besoin
+      if (this.isTaskInProgress) {
+        this.stopTask()
+      }
+
+      // Récupération du nom de l'ancienne tâche
+      let newTaskname = null
+      this.tasks.forEach(task => {
+        if (task.id === oldTaskID) {
+          newTaskname = task.name
+        }
+      })
+
+      // Lancement de la nouvelle tâche
+      this.$nextTick(function () {
+        this.taskname = newTaskname
+        this.startTask()
+      })
     },
     getAnID () {
       this.taskID++
@@ -110,7 +132,13 @@ const app = Vue.createApp({
 
 app.component('task-actions', {
   template: `
-    <button @click="sendDelete" type="button" class="btn btn-danger" style="line-height: 1">
+    <button @click="sendRestart" type="button" class="btn btn-secondary" style="line-height: 1">
+      <svg height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </button>
+    <button @click="sendDelete" type="button" class="btn btn-danger ms-2" style="line-height: 1">
       <svg height="15" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
       </svg>
@@ -123,6 +151,9 @@ app.component('task-actions', {
     }
   },
   methods: {
+    sendRestart () {
+      this.$emit('restart', this.id)
+    },
     sendDelete () {
       this.$emit('delete', this.id)
     }
