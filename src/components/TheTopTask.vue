@@ -6,9 +6,9 @@
     </el-col>
 
     <el-col :xs="12" :span="9" :lg="6" class="actions">
+      <strong>00:00:00</strong>
       <el-button type="primary" icon="el-icon-video-play" circle></el-button>
       <el-button type="danger" icon="el-icon-video-pause" circle></el-button>
-      <span>00:00:00</span>
     </el-col>
 
   </el-row>
@@ -33,8 +33,8 @@
 .actions {
   text-align: right;
   padding-right: 20px;
-  span {
-    padding-left: 20px;
+  strong {
+    padding-right: 20px;
   }
 }
 </style>

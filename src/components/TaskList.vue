@@ -1,6 +1,6 @@
 <template>
   <el-table
-    :data="tableData"
+    :data="tasks"
     stripe
     style="width: 100%">
 
@@ -11,7 +11,7 @@
 
     <el-table-column
       align="right"
-      prop="datesBetween"
+      prop="start"
       label="Début et fin"
       width="100">
       <template #header></template>
@@ -19,7 +19,7 @@
 
     <el-table-column
       align="right"
-      prop="duration"
+      prop="end"
       label="Durée"
       width="100">
       <template #header></template>
@@ -46,25 +46,10 @@
 
 <script>
   export default {
-    data() {
-      return {
-        tableData: [{
-          datesBetween: '2016-05-03',
-          duration: '00:00:45',
-          name: 'No. 189, Grove St, Los Angeles'
-        }, {
-          datesBetween: '2016-05-02',
-          duration: '00:00:45',
-          name: 'No. 189, Grove St, Los Angeles'
-        }, {
-          datesBetween: '2016-05-04',
-          duration: '00:00:45',
-          name: 'No. 189, Grove St, Los Angeles'
-        }, {
-          datesBetween: '2016-05-01',
-          duration: '00:00:45',
-          name: 'No. 189, Grove St, Los Angeles'
-        }]
+    props: {
+      tasks: {
+        type: Array,
+        default: []
       }
     },
     methods: {

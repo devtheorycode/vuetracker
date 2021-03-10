@@ -12,7 +12,7 @@
       </el-header>
 
       <el-main>
-        <TaskList />
+        <TaskList :tasks="tasks" />
       </el-main>
 
     </el-container>
@@ -32,13 +32,13 @@
       TaskList
     },
     data() {
-      const item = {
-        date: '2016-05-02',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles'
+      const sample = {
+        start: '2016-05-02',
+        end: '00:43:13',
+        name: 'No. 189, Grove St, Los Angeles'
       };
       return {
-        tableData: Array(20).fill(item)
+        tasks: Array(20).fill(sample)
       }
     }
   };
