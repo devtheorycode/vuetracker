@@ -33,9 +33,9 @@
     },
     data() {
       const sample = {
-        start: '2016-05-02',
-        end: '00:43:13',
-        name: 'No. 189, Grove St, Los Angeles'
+        name: 'Développement de la feature "edit" d\'un tweet',
+        startTime: '01/03/2021',
+        endTime: '00:43:13',
       };
       return {
         tasks: Array(20).fill(sample)

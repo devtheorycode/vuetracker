@@ -11,7 +11,7 @@
 
     <el-table-column
       align="right"
-      prop="start"
+      prop="startTime"
       label="Début et fin"
       width="100">
       <template #header></template>
@@ -19,7 +19,7 @@
 
     <el-table-column
       align="right"
-      prop="end"
+      prop="endTime"
       label="Durée"
       width="100">
       <template #header></template>
