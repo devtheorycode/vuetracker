@@ -8,11 +8,20 @@
     <el-container>
       
       <el-header height="60px">
-        <TheTopTask />
+        <TheTopTask
+          ref="TheTopTask"
+          @newTask="addTask($event)"
+        />
       </el-header>
 
       <el-main>
-        <TaskList :tasks="tasks" />
+        <TaskList
+          :tasks="tasks"          
+          v-on="{
+            restart: sendRestartTask,
+            delete: deleteTask,
+          }"
+        />
       </el-main>
 
     </el-container>
@@ -32,15 +41,50 @@
       TaskList
     },
     data() {
-      const sample = {
-        name: 'Développement de la feature "edit" d\'un tweet',
-        startTime: '01/03/2021',
-        endTime: '00:43:13',
-      };
       return {
-        tasks: Array(20).fill(sample)
+        taskID: 0,
+        tasks: []
       }
-    }
+    },
+    methods: {
+      addTask ({ name, startTime }) {
+        this.tasks.unshift({
+          id: this.getAnID(),
+          name, 
+          startTime,
+          endTime: Date.now()
+        })
+      },  
+      sendRestartTask (taskID) {
+        // Récupération du nom de l'ancienne tâche
+        let newTaskname = null
+        this.tasks.forEach(task => {
+          if (task.id === taskID) {
+            newTaskname = task.name
+          }
+        })
+
+        // Relancement de la tâche
+        this.$refs.TheTopTask.restartTask(newTaskname)
+
+      },   
+      deleteTask (taskID) {
+        // Récupération de l'index de la tâche
+        let taskIndex = null
+        this.tasks.forEach((task, index) => {
+          if (task.id === taskID) {
+            taskIndex = index
+          }
+        })
+
+        // Suppression de la tâche
+        this.tasks.splice(taskIndex, 1)
+      },
+      getAnID () {
+        this.taskID++
+        return this.taskID
+      }
+    },
   };
 </script>
 
