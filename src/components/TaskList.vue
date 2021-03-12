@@ -4,7 +4,9 @@
     stripe
     row-key="id"
     empty-text="Aucune tâche"
-    style="width: 100%">
+    style="width: 100%"
+    v-loading="areTasksLoading"
+    >
 
     <el-table-column
       prop="name"
@@ -67,6 +69,10 @@
       tasks: {
         type: Array,
         default: []
+      },
+      areTasksLoading: {
+        type: Boolean,
+        default: false
       }
     },
     methods: {

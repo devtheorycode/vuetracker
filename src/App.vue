@@ -16,7 +16,8 @@
 
       <el-main>
         <TaskList
-          :tasks="tasks"          
+          :tasks="tasks"
+          :areTasksLoading="areTasksLoading"       
           v-on="{
             restart: sendRestartTask,
             delete: deleteTask,
@@ -31,6 +32,7 @@
 
 <script>
   import { v4 as uuid } from '@lukeed/uuid';
+  import * as TaskService from './services/TaskService.js';
 
   import TheMenu from './components/TheMenu.vue'
   import TheTopTask from './components/TheTopTask.vue'
@@ -44,17 +46,26 @@
     },
     data() {
       return {
-        tasks: []
+        tasks: [],
+        areTasksLoading: true
       }
     },
     methods: {
-      addTask ({ name, startTime }) {
+      async addTask ({ name, startTime }) {
+        // Ajout de la tâche en local
         this.tasks.unshift({
           id: uuid(),
           name, 
           startTime,
           endTime: Date.now()
         })
+
+        // Mise à jour de toutes les tâches en API
+        try {
+          await TaskService.updateAll(this.tasks)
+        } catch (e) {
+          console.error(e)
+        }
       },  
       sendRestartTask (taskID) {
         // Récupération du nom de l'ancienne tâche
@@ -69,7 +80,7 @@
         this.$refs.TheTopTask.restartTask(newTaskname)
 
       },   
-      deleteTask (taskID) {
+      async deleteTask (taskID) {
         // Récupération de l'index de la tâche
         let taskIndex = null
         this.tasks.forEach((task, index) => {
@@ -78,10 +89,26 @@
           }
         })
 
-        // Suppression de la tâche
-        this.tasks.splice(taskIndex, 1)
+        // Suppression de la tâche en local
+        this.tasks.splice(taskIndex, 1)        
+
+        // Mise à jour de toutes les tâches en API
+        try {
+          await TaskService.updateAll(this.tasks)
+        } catch (e) {
+          console.error(e)
+        }
       }
     },
+    async created () {
+      // Récupération de toutes les tâches
+      try {
+        this.tasks = await TaskService.getAll()
+      } catch (e) {
+        console.error(e)
+      }
+      this.areTasksLoading = false
+    }
   };
 </script>
 
