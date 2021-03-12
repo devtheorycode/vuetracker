@@ -30,6 +30,8 @@
 </template>
 
 <script>
+  import { v4 as uuid } from '@lukeed/uuid';
+
   import TheMenu from './components/TheMenu.vue'
   import TheTopTask from './components/TheTopTask.vue'
   import TaskList from './components/TaskList.vue'
@@ -42,14 +44,13 @@
     },
     data() {
       return {
-        taskID: 0,
         tasks: []
       }
     },
     methods: {
       addTask ({ name, startTime }) {
         this.tasks.unshift({
-          id: this.getAnID(),
+          id: uuid(),
           name, 
           startTime,
           endTime: Date.now()
@@ -79,10 +80,6 @@
 
         // Suppression de la tâche
         this.tasks.splice(taskIndex, 1)
-      },
-      getAnID () {
-        this.taskID++
-        return this.taskID
       }
     },
   };

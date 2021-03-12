@@ -43,6 +43,7 @@
            restart: sendRestart,
            delete: sendDelete,
          }"
+         @copyTaskname="copyToClipboard(scope.row.name)"
         />
       </template>
     </el-table-column>
@@ -85,6 +86,9 @@
       },
       sendDelete (data) {
         this.$emit('delete', data)
+      },
+      copyToClipboard(text) {
+        navigator.clipboard.writeText(text)
       }
     }
   }
