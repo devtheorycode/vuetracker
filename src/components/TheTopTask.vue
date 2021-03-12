@@ -44,6 +44,24 @@
         } else {
           clearInterval(this.intervalEverySecond)
         }
+      },
+      errorMsg (newVal) {
+        // Notification en cas d'erreur
+        if (newVal !== null) {
+          this.$notify({
+            title: 'Attention',
+            message: this.errorMsg,
+            type: 'warning',
+            offset: 50,
+            duration: 3000,
+            onClose: () => {
+              // Pour que la même erreur puisse de nouveau être possible
+              if (this.errorMsg === newVal) {
+                this.errorMsg = null
+              }
+            }
+          });
+        }
       }
     },
     methods: {
