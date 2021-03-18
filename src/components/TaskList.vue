@@ -95,6 +95,13 @@
       },
       copyToClipboard(text) {
         navigator.clipboard.writeText(text)
+        this.$notify({
+          title: 'Succès',
+          message: `Le nom de cette tâche a bien été copié`,
+          type: 'success',
+          offset: 50,
+          duration: 1500
+        });
       }
     }
   }
