@@ -6,10 +6,12 @@
     empty-text="Aucune tâche"
     style="width: 100%"
     v-loading="areTasksLoading"
+    ref="table"
     >
 
     <el-table-column
       prop="name"
+      sort-by="startTime"
       label="Tâche">
     </el-table-column>
 
@@ -75,6 +77,14 @@
         default: false
       }
     },
+    watch: {
+      tasks: {
+        deep: true,
+        handler() {
+          this.sortTable()
+        }
+      }
+    },
     methods: {
       formatTimestamp (ts) {
         return this.tsFormatter.format(ts)
@@ -102,7 +112,14 @@
           offset: 50,
           duration: 1500
         });
+      },
+      sortTable() {
+        const sortBy = (this.$route.query.sortBy === 'ascending') ? 'ascending' : 'descending';
+        this.$refs.table.sort('name', sortBy)
       }
-    }
+    },
+    mounted () {
+      this.sortTable()
+    },
   }
 </script>

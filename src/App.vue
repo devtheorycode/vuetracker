@@ -15,14 +15,16 @@
       </el-header>
 
       <el-main>
-        <TaskList
+
+        <router-view
           :tasks="tasks || []"
           :areTasksLoading="areTasksLoading"       
           v-on="{
             restart: sendRestartTask,
             delete: deleteTask,
           }"
-        />
+        ></router-view>
+
       </el-main>
 
     </el-container>
