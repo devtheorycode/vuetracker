@@ -163,4 +163,8 @@ body { margin: 0; }
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 
+.highlight-line {
+  background-color: #40a0ff31 !important
+}
+
 </style>

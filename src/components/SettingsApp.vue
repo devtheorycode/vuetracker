@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h1>Paramètres</h1>
-    <router-view></router-view>
-  </div>
+  <h2>Application</h2>
 </template>
 
 <script>

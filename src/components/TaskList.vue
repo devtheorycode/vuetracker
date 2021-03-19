@@ -7,8 +7,9 @@
 
   <el-table
     :data="tasks"
-    stripe
+    :row-class-name="checkHighlight"
     row-key="id"
+    @row-click="setHighlight"
     empty-text="Aucune tâche"
     style="width: 100%"
     v-loading="areTasksLoading"
@@ -127,6 +128,16 @@
       },
       sortTable() {
         this.$refs.table.sort('name', this.sortBy)
+      },
+      checkHighlight({ row }) {
+        if (this.$route.params.taskID && row.id === this.$route.params.taskID) {
+          return 'highlight-line'
+        } else {
+          return ''
+        }
+      },
+      setHighlight(row) {
+        this.$router.push({ path: '/home/' + row.id })
       }
     },
     mounted () {
