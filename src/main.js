@@ -4,6 +4,8 @@ import * as VueRouter from 'vue-router'
 import App from './App.vue'
 import HomePage from './pages/Home.vue'
 import SettingsPage from './pages/Settings.vue'
+import LoginPage from './pages/Login.vue'
+import NotFoundPage from './pages/NotFound.vue'
 import SettingsApp from './components/SettingsApp.vue'
 import SettingsUser from './components/SettingsUser.vue'
 
@@ -18,6 +20,7 @@ const router = VueRouter.createRouter({
       alias: '/home',
       name: 'Home',
       component: HomePage,
+      meta: { needLoggedIn: false },
       children: [
         {
           path: 'home/:taskID',
@@ -29,18 +32,49 @@ const router = VueRouter.createRouter({
       path: '/settings',
       name: 'Settings',
       component: SettingsPage,
+      meta: { needLoggedIn: false },
       children: [
         {
           path: 'app',
-          component: SettingsApp
+          component: SettingsApp,
+          meta: { needLoggedIn: false }
         },
         {
           path: 'user',
-          component: SettingsUser
+          component: SettingsUser,
+          meta: { needLoggedIn: false }
         }
       ]
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: LoginPage,
+      beforeEnter: (to, from) => {
+        if (localStorage.getItem('isLoggedIn')) {
+          return '/'
+        }
+      }
+    },
+    {
+      path: '/notfound',
+      name: 'NotFound',
+      component: NotFoundPage
+    },
+    {
+      path: '/:wrongPath(.*)',
+      redirect: (to) => {
+        return { name: 'NotFound', params: { wrongPath: to.params.wrongPath } }
+      }
     }
   ]
+})
+
+router.beforeEach((to, from) => {
+  /* global localStorage */
+  if (to.meta.needLoggedIn && !localStorage.getItem('isLoggedIn')) {
+    return '/login'
+  }
 })
 
 const app = createApp(App)
