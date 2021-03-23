@@ -1,5 +1,5 @@
 <template>
-  <el-menu :router="true" :default-active="($route.matched[0]) ? $route.matched[0].path : $route.path">
+  <el-menu :router="true" :default-active="(($route.matched[0] && $route.matched[0].path == '/') || $route.path == '/home') ? '/' : $route.path">
 
     <h3>Vue Tracker</h3>
 
@@ -8,10 +8,14 @@
       <span>Tracker</span>
     </el-menu-item>
 
-    <el-menu-item index="/settings">
-      <i class="el-icon-setting"></i>
-      <span>Paramètres</span>
-    </el-menu-item>
+    <el-submenu index="/settings">
+      <template #title>
+        <i class="el-icon-setting"></i>
+        <span>Paramètres</span>
+      </template>
+      <el-menu-item index="/settings/app">Application</el-menu-item>
+      <el-menu-item index="/settings/user">Utilisateur</el-menu-item>
+    </el-submenu>
     
   </el-menu>
 </template>
@@ -26,6 +30,7 @@
 .el-menu {
   border-right: none !important;
   text-align: left;
+  overflow-x: hidden;
 }
 
 h3 {

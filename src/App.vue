@@ -22,6 +22,7 @@
           v-on="{
             restart: sendRestartTask,
             delete: deleteTask,
+            updateTasks: getAllTasks
           }"
         ></router-view>
 
@@ -107,24 +108,28 @@
 
         // Suppression de la tâche
         this.tasks.splice(taskIndex, 1)
+      },
+      async getAllTasks() {
+        this.areTasksLoading = true
+        try {
+          this.tasks = await TaskService.getAll()
+        } catch (e) {
+          console.error(e)
+          this.tasks = []
+          this.$notify({
+            title: 'Mode hors-ligne',
+            message: `Récupération des tâches impossible`,
+            type: 'error',
+            offset: 50,
+            duration: 3000
+          });
+        }
+        this.areTasksLoading = false
       }
     },
     async created () {
       // Récupération de toutes les tâches
-      try {
-        this.tasks = await TaskService.getAll()
-      } catch (e) {
-        console.error(e)
-        this.tasks = []
-        this.$notify({
-          title: 'Mode hors-ligne',
-          message: `Récupération des tâches impossible`,
-          type: 'error',
-          offset: 50,
-          duration: 3000
-        });
-      }
-      this.areTasksLoading = false
+      await this.getAllTasks()
     }
   };
 </script>

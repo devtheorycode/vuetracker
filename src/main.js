@@ -20,7 +20,7 @@ const router = VueRouter.createRouter({
       alias: '/home',
       name: 'Home',
       component: HomePage,
-      meta: { needLoggedIn: false },
+      meta: { needJsonBin: true },
       children: [
         {
           path: 'home/:taskID',
@@ -32,17 +32,17 @@ const router = VueRouter.createRouter({
       path: '/settings',
       name: 'Settings',
       component: SettingsPage,
-      meta: { needLoggedIn: false },
+      meta: { needJsonBin: true },
       children: [
         {
           path: 'app',
           component: SettingsApp,
-          meta: { needLoggedIn: false }
+          meta: { needJsonBin: false }
         },
         {
           path: 'user',
           component: SettingsUser,
-          meta: { needLoggedIn: false }
+          meta: { needJsonBin: true }
         }
       ]
     },
@@ -51,7 +51,7 @@ const router = VueRouter.createRouter({
       name: 'Login',
       component: LoginPage,
       beforeEnter: (to, from) => {
-        if (localStorage.getItem('isLoggedIn')) {
+        if (localStorage.getItem('jsonBinAccess')) {
           return '/'
         }
       }
@@ -72,8 +72,8 @@ const router = VueRouter.createRouter({
 
 router.beforeEach((to, from) => {
   /* global localStorage */
-  if (to.meta.needLoggedIn && !localStorage.getItem('isLoggedIn')) {
-    return '/login'
+  if (to.meta.needJsonBin && !localStorage.getItem('jsonBinAccess')) {
+    return '/settings/app'
   }
 })
 

@@ -1,10 +1,8 @@
 import axios from 'axios'
 
-const JSON_BIN_SECRET = import.meta.env.VITE_JSON_BIN_SECRET
-const instance = axios.create({
-  baseURL: 'https://api.jsonbin.io/v3/b/604b81e17ea6546cf3dbe9fd',
-  headers: { 'X-Master-Key': JSON_BIN_SECRET }
-})
+// Définition de l'instance en fonction des données en localstorage
+let instance = null
+updateAxiosInstance()
 
 // Récupération de toutes les tâches
 export async function getAll () {
@@ -15,4 +13,13 @@ export async function getAll () {
 // Mise à jour de toutes les tâches
 export async function updateAll (newTasks) {
   await instance.put('/', newTasks)
+}
+
+// Mise à jour de l'instance d'Axios
+export async function updateAxiosInstance () {
+  /* global localStorage */
+  instance = axios.create({
+    baseURL: 'https://api.jsonbin.io/v3/b/' + localStorage.getItem('jsonBinID'),
+    headers: { 'X-Master-Key': localStorage.getItem('jsonBinKey') }
+  })
 }
