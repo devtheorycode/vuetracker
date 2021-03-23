@@ -3,14 +3,15 @@ import * as VueRouter from 'vue-router'
 
 import App from './App.vue'
 import HomePage from './pages/Home.vue'
-import SettingsPage from './pages/Settings.vue'
-import LoginPage from './pages/Login.vue'
-import NotFoundPage from './pages/NotFound.vue'
-import SettingsApp from './components/SettingsApp.vue'
-import SettingsUser from './components/SettingsUser.vue'
 
 import ElementPlus from 'element-plus'
 import 'element-plus/lib/theme-chalk/index.css'
+
+const LoginPage = () => import('./pages/Login.vue')
+const NotFoundPage = () => import('./pages/NotFound.vue')
+const SettingsPage = () => import('./pages/Settings.vue')
+const SettingsApp = () => import('./components/SettingsApp.vue')
+const SettingsUser = () => import('./components/SettingsUser.vue')
 
 const router = VueRouter.createRouter({
   history: VueRouter.createWebHistory(),
