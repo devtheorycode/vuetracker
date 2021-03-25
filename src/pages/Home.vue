@@ -13,6 +13,7 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
   import TaskList from '../components/TaskList.vue'
   export default {
     components: {
@@ -36,9 +37,13 @@
       sendDelete (data) {
         this.$emit('delete', data)
       },
+      ...mapActions([
+        'resetCount'
+      ])
     },
-    mounted () {
-      this.$store.state.count++;
+    async mounted () {
+      await this.resetCount()
+      console.log('action finished')
     },
   }
 </script>
