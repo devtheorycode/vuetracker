@@ -1,7 +1,7 @@
 <template>
   <el-menu :router="true" :default-active="(($route.matched[0] && $route.matched[0].path == '/') || $route.path == '/home') ? '/' : $route.path">
 
-    <h3>Vue Tracker</h3>
+    <h3>Vue Tracker {{ countPlusOne }}</h3>
 
     <el-menu-item index="/">
       <i class="el-icon-time"></i>
@@ -21,8 +21,14 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   export default {
-    
+    computed: {
+      ...mapState(['count']),
+      countPlusOne () {
+        return this.count + 1
+      }
+    },
   }
 </script>
 

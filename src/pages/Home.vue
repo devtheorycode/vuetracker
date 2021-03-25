@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Accueil</h1>
+    <h1>Accueil {{ $store.state.count }}</h1>
     <TaskList
       :tasks="tasks || []"
       :areTasksLoading="areTasksLoading"       
@@ -36,6 +36,9 @@
       sendDelete (data) {
         this.$emit('delete', data)
       },
+    },
+    mounted () {
+      this.$store.state.count++;
     },
   }
 </script>
