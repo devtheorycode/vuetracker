@@ -1,6 +1,6 @@
 <template>
   <el-button @click="copyToClipboard(taskname)" size="small" icon="el-icon-document-copy" circle></el-button>
-  <el-button @click="restartTask(taskname)" size="small" icon="el-icon-video-play" type="primary" circle></el-button>
+  <el-button @click="restartTask(taskID)" size="small" icon="el-icon-video-play" type="primary" circle></el-button>
   <el-button @click="deleteTask(taskID)" size="small" icon="el-icon-delete" type="danger" circle></el-button>
 </template>
 
