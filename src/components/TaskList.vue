@@ -6,7 +6,7 @@
   </el-select>
 
   <el-table
-    :data="tasks"
+    :data="tasks || []"
     :row-class-name="checkHighlight"
     row-key="id"
     @row-click="setHighlight"
@@ -50,11 +50,7 @@
       <template #default="scope">
         <TaskListActions
          :taskID="scope.row.id"
-         v-on="{
-           restart: sendRestart,
-           delete: sendDelete,
-         }"
-         @copyTaskname="copyToClipboard(scope.row.name)"
+         :taskname="scope.row.name"
         />
       </template>
     </el-table-column>
@@ -63,6 +59,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   import TaskListActions from './TaskListActions.vue'
 
   export default {
@@ -76,15 +73,11 @@
         sortBy: (this.$route.query.sortBy === 'ascending') ? 'ascending' : 'descending'
       }
     },
-    props: {
-      tasks: {
-        type: Array,
-        default: []
-      },
-      areTasksLoading: {
-        type: Boolean,
-        default: false
-      }
+    computed: {
+      ...mapState([
+        'tasks',
+        'areTasksLoading'
+      ])
     },
     watch: {
       sortBy(newVal) {
@@ -109,22 +102,6 @@
         seconds = seconds % 60
         minutes = minutes % 60
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-      },
-      sendRestart (data) {
-        this.$emit('restart', data)
-      },
-      sendDelete (data) {
-        this.$emit('delete', data)
-      },
-      copyToClipboard(text) {
-        navigator.clipboard.writeText(text)
-        this.$notify({
-          title: 'Succès',
-          message: `Le nom de cette tâche a bien été copié`,
-          type: 'success',
-          offset: 50,
-          duration: 1500
-        });
       },
       sortTable() {
         this.$refs.table.sort('name', this.sortBy)

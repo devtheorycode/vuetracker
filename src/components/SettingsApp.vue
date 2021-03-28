@@ -12,7 +12,8 @@
 </template>
 
 <script>
-  import { getAll as getAllTasks, updateAxiosInstance } from '../services/TaskService.js'
+  import { mapActions } from 'vuex'
+  import { updateAxiosInstance } from '../services/TaskService.js'
   
   export default {    
     data() {
@@ -22,8 +23,10 @@
         areNewValuesBeingTested: false
       }
     },
-    emits: ['updateTasks'],
     methods: {
+      ...mapActions([
+        'fetchAllTasks'
+      ]),
       async updateApiValues() {
         // Mise à jour des valeurs de JSONBin.io
         this.areNewValuesBeingTested = true
@@ -41,9 +44,8 @@
         // Tests dela connexion avec JSONBin.io
         updateAxiosInstance()
         try {
-          await getAllTasks()
+          await this.fetchAllTasks()
           localStorage.setItem('jsonBinAccess', true)
-          this.$emit('updateTasks')
           this.$notify({
             title: 'Succès',
             message: `Vos clés sont enregistrés dans ce navigateur`,

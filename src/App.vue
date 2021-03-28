@@ -10,21 +10,12 @@
       <el-header height="60px">
         <TheTopTask
           ref="TheTopTask"
-          @newTask="addTask($event)"
         />
       </el-header>
 
       <el-main>
 
-        <router-view
-          :tasks="tasks || []"
-          :areTasksLoading="areTasksLoading"       
-          v-on="{
-            restart: sendRestartTask,
-            delete: deleteTask,
-            updateTasks: getAllTasks
-          }"
-        ></router-view>
+        <router-view></router-view>
 
       </el-main>
 
@@ -34,8 +25,7 @@
 </template>
 
 <script>
-  import { v4 as uuid } from '@lukeed/uuid';
-  import * as TaskService from './services/TaskService.js';
+  import { mapState, mapActions } from 'vuex'
 
   import TheMenu from './components/TheMenu.vue'
   import TheTopTask from './components/TheTopTask.vue'
@@ -47,11 +37,10 @@
       TheTopTask,
       TaskList
     },
-    data() {
-      return {
-        tasks: null,
-        areTasksLoading: true
-      }
+    computed: {
+      ...mapState([
+        'tasks'
+      ])
     },
     watch: {
       tasks: {
@@ -60,7 +49,7 @@
         async handler (newVal, oldVal) {
           if (newVal !== null && oldVal !== null) {          
             try {
-              await TaskService.updateAll(this.tasks)
+              await this.updateAllTasks()
             } catch (e) {
               console.error(e)
               this.$notify({
@@ -76,60 +65,25 @@
       }
     },
     methods: {
-      async addTask ({ name, startTime }) {
-        // Ajout de la tâche
-        this.tasks.unshift({
-          id: uuid(),
-          name, 
-          startTime,
-          endTime: Date.now()
-        })
-      },  
-      sendRestartTask (taskID) {
-        // Récupération du nom de l'ancienne tâche
-        let newTaskname = null
-        this.tasks.forEach(task => {
-          if (task.id === taskID) {
-            newTaskname = task.name
-          }
-        })
-
-        // Relancement de la tâche
-        this.$refs.TheTopTask.restartTask(newTaskname)
-      },   
-      async deleteTask (taskID) {
-        // Récupération de l'index de la tâche
-        let taskIndex = null
-        this.tasks.forEach((task, index) => {
-          if (task.id === taskID) {
-            taskIndex = index
-          }
-        })
-
-        // Suppression de la tâche
-        this.tasks.splice(taskIndex, 1)
-      },
-      async getAllTasks() {
-        this.areTasksLoading = true
-        try {
-          this.tasks = await TaskService.getAll()
-        } catch (e) {
-          console.error(e)
-          this.tasks = []
-          this.$notify({
-            title: 'Mode hors-ligne',
-            message: `Récupération des tâches impossible`,
-            type: 'error',
-            offset: 50,
-            duration: 3000
-          });
-        }
-        this.areTasksLoading = false
-      }
+      ...mapActions([
+        'fetchAllTasks',
+        'updateAllTasks'
+      ])
     },
     async created () {
       // Récupération de toutes les tâches
-      await this.getAllTasks()
+      try {
+        await this.fetchAllTasks()
+      } catch (e) {
+        console.error(e)
+        this.$notify({
+          title: 'Mode hors-ligne',
+          message: `Récupération des tâches impossible`,
+          type: 'error',
+          offset: 50,
+          duration: 3000
+        });
+      }
     }
   };
 </script>

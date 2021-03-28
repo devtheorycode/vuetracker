@@ -7,26 +7,36 @@
 
     <el-col :xs="12" :span="9" :lg="6" class="actions">
       <strong>{{ currentDuration }}</strong>
-      <el-button v-if="!isTaskInProgress" @click="startTask" type="primary" icon="el-icon-video-play" circle></el-button>
-      <el-button v-else @click="stopTask" type="danger" icon="el-icon-video-pause" circle></el-button>
+      <el-button v-if="!isTaskInProgress" @click="beforeStartTask" type="primary" icon="el-icon-video-play" circle></el-button>
+      <el-button v-else @click="beforeStopTask" type="danger" icon="el-icon-video-pause" circle></el-button>
     </el-col>
 
   </el-row>
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex'
   export default {
     data() {
       return {
-        taskname: '',
-        isTaskInProgress: false,
-        startTime: null,
         nowTime: null,
         intervalEverySecond: null,
         errorMsg: null
       }
     },
     computed: {
+      ...mapState({
+        startTime: (state) => state.currentStartTime,
+        isTaskInProgress: (state) => state.isTaskInProgress
+      }),
+      taskname: {
+        get () {
+          return this.$store.state.currentTaskname
+        },
+        set (value) {
+          this.$store.commit('SET_CURRENT_TASKNAME', value)
+        }
+      },
       currentDuration () {
         if (this.startTime && this.nowTime) {
           return this.durationBetweenTimestamps(this.startTime, this.nowTime)
@@ -37,11 +47,14 @@
     },
     watch: {
       isTaskInProgress (isInProgress) {
-        if (isInProgress) {
+        if (isInProgress) {          
+          this.nowTime = Date.now()
           this.intervalEverySecond = setInterval(() => {
             this.nowTime = Date.now()
           }, 1000)
-        } else {
+        } else {  
+          this.errorMsg = null
+          this.nowTime = null
           clearInterval(this.intervalEverySecond)
         }
       },
@@ -65,7 +78,12 @@
       }
     },
     methods: {
-      startTask () {
+      ...mapActions([
+        'addTask',
+        'startTask',
+        'stopTask'
+      ]),
+      beforeStartTask () {
         // Vérifications
         if (this.taskname.length === 0) {
           this.errorMsg = "Le nom d'une tâche ne peut pas être vide"
@@ -78,47 +96,24 @@
         }
 
         // Début de la tâche
-        this.isTaskInProgress = true
-        this.startTime = Date.now()
-        this.nowTime = Date.now()
+        this.startTask()
       },
-      stopTask () {
+      beforeStopTask () {
         // Vérifications
         if (!this.isTaskInProgress) {
           this.errorMsg = "Aucune tâche n'est en cours"
           return
         }
 
-        // Envoie de la nouvelle tâche à ajouter
-        this.$emit('newTask', {
-          name: this.taskname,
-          startTime: this.startTime,
-        })
-
-        // Fin de la tâche
-        this.isTaskInProgress = false
-        this.errorMsg = null
-        this.nowTime = null
-        this.taskname = ''
+        // Envoie de la nouvelle tâche à ajouter        
+        this.stopTask()
       },
       toggleTask () {
         if (this.isTaskInProgress) {
-          this.stopTask()
+          this.beforeStopTask()
         } else {
-          this.startTask()
+          this.beforeStartTask()
         }
-      },      
-      restartTask (newTaskname) {
-        // Arrêt de la tâche en cours si besoin
-        if (this.isTaskInProgress) {
-          this.stopTask()
-        }
-
-        // Lancement de la nouvelle tâche
-        this.$nextTick(function () {
-          this.taskname = newTaskname
-          this.startTask()
-        })
       },
       durationBetweenTimestamps (start, end) {
         let seconds = Math.floor((end / 1000) - (start / 1000))
