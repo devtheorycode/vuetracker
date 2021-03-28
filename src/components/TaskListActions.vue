@@ -20,16 +20,14 @@
     methods: {
       ...mapActions({
         deleteTask: 'tasks/deleteTask',
-        restartTask: 'tasks/restartTask'
+        restartTask: 'tasks/restartTask',
+        sendSuccess: 'notifications/sendSuccess'
       }),
       copyToClipboard(text) {
         navigator.clipboard.writeText(text)
-        this.$notify({
+        this.sendSuccess({
           title: 'Succès',
-          message: `Le nom de cette tâche a bien été copié`,
-          type: 'success',
-          offset: 50,
-          duration: 1500
+          message: `Le nom de cette tâche a bien été copié`
         });
       },
     }

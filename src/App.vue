@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex'
+  import { mapState, mapActions, mapMutations } from 'vuex'
 
   import TheMenu from './components/TheMenu.vue'
   import TheTopTask from './components/TheTopTask.vue'
@@ -52,12 +52,9 @@
               await this.updateAllTasks()
             } catch (e) {
               console.error(e)
-              this.$notify({
+              this.sendError({
                 title: 'Mode hors-ligne',
-                message: `Synchronisation des tâches impossible`,
-                type: 'error',
-                offset: 50,
-                duration: 3000
+                message: `Synchronisation des tâches impossible`
               });
             }
           }
@@ -67,21 +64,25 @@
     methods: {
       ...mapActions({
         fetchAllTasks: 'tasks/fetchAllTasks',
-        updateAllTasks: 'tasks/updateAllTasks'
+        updateAllTasks: 'tasks/updateAllTasks',
+        sendError: 'notifications/sendError'
+      }),
+      ...mapMutations({
+        SET_NOTIFIER: 'notifications/SET_NOTIFIER'
       })
     },
     async created () {
+      // Mise en place du système de notification
+      this.SET_NOTIFIER(this.$notify)
+
       // Récupération de toutes les tâches
       try {
         await this.fetchAllTasks()
       } catch (e) {
         console.error(e)
-        this.$notify({
+        this.sendError({
           title: 'Mode hors-ligne',
-          message: `Récupération des tâches impossible`,
-          type: 'error',
-          offset: 50,
-          duration: 3000
+          message: `Récupération des tâches impossible`
         });
       }
     }

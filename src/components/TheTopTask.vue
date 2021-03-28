@@ -61,19 +61,11 @@
       errorMsg (newVal) {
         // Notification en cas d'erreur
         if (newVal !== null) {
-          this.$notify({
+          this.sendWarning({
             title: 'Attention',
-            message: this.errorMsg,
-            type: 'warning',
-            offset: 50,
-            duration: 3000,
-            onClose: () => {
-              // Pour que la même erreur puisse de nouveau être possible
-              if (this.errorMsg === newVal) {
-                this.errorMsg = null
-              }
-            }
-          });
+            message: this.errorMsg
+          })
+          this.errorMsg = null
         }
       }
     },
@@ -82,6 +74,7 @@
         addTask: 'tasks/addTask',
         startTask: 'tasks/startTask',
         stopTask: 'tasks/stopTask',
+        sendWarning: 'notifications/sendWarning'
       }),
       beforeStartTask () {
         // Vérifications
