@@ -38,9 +38,9 @@
       TaskList
     },
     computed: {
-      ...mapState([
-        'tasks'
-      ])
+      ...mapState({
+        tasks: (state) => state.tasks.tasks
+      })
     },
     watch: {
       tasks: {
@@ -65,10 +65,10 @@
       }
     },
     methods: {
-      ...mapActions([
-        'fetchAllTasks',
-        'updateAllTasks'
-      ])
+      ...mapActions({
+        fetchAllTasks: 'tasks/fetchAllTasks',
+        updateAllTasks: 'tasks/updateAllTasks'
+      })
     },
     async created () {
       // Récupération de toutes les tâches

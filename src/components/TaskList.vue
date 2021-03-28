@@ -79,12 +79,12 @@
       }
     },
     computed: {
-      ...mapState([
-        'areTasksLoading'
-      ]),
-      ...mapGetters([
-        'tasksByDay'
-      ])
+      ...mapState({
+        areTasksLoading: (state) => state.tasks.areTasksLoading
+      }),
+      ...mapGetters({
+        tasksByDay: 'tasks/tasksByDay'
+      })
     },
     watch: {
       sortBy(newVal) {
@@ -113,8 +113,6 @@
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
       },
       sortTable() {
-        console.log(this.tasksByDay)
-        console.log(this.$refs)
         for (let dayTS in this.tasksByDay) {
           this.$refs[dayTS].sort('name', this.sortBy)
         }

@@ -26,15 +26,15 @@
     },
     computed: {
       ...mapState({
-        startTime: (state) => state.currentStartTime,
-        isTaskInProgress: (state) => state.isTaskInProgress
+        startTime: (state) => state.tasks.currentStartTime,
+        isTaskInProgress: (state) => state.tasks.isTaskInProgress
       }),
       taskname: {
         get () {
-          return this.$store.state.currentTaskname
+          return this.$store.state.tasks.currentTaskname
         },
         set (value) {
-          this.$store.commit('SET_CURRENT_TASKNAME', value)
+          this.$store.commit('tasks/SET_CURRENT_TASKNAME', value)
         }
       },
       currentDuration () {
@@ -78,11 +78,11 @@
       }
     },
     methods: {
-      ...mapActions([
-        'addTask',
-        'startTask',
-        'stopTask'
-      ]),
+      ...mapActions({
+        addTask: 'tasks/addTask',
+        startTask: 'tasks/startTask',
+        stopTask: 'tasks/stopTask',
+      }),
       beforeStartTask () {
         // Vérifications
         if (this.taskname.length === 0) {

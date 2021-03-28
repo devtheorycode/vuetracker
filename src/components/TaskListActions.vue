@@ -18,10 +18,10 @@
       }
     },
     methods: {
-      ...mapActions([
-        'deleteTask',
-        'restartTask'
-      ]),
+      ...mapActions({
+        deleteTask: 'tasks/deleteTask',
+        restartTask: 'tasks/restartTask'
+      }),
       copyToClipboard(text) {
         navigator.clipboard.writeText(text)
         this.$notify({
