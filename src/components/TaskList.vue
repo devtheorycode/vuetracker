@@ -5,61 +5,65 @@
     <el-option label="La plus ancienne d'abord" value="ascending"></el-option>
   </el-select>
 
-  <el-table
-    :data="tasks || []"
-    :row-class-name="checkHighlight"
-    row-key="id"
-    @row-click="setHighlight"
-    empty-text="Aucune tâche"
-    style="width: 100%"
-    v-loading="areTasksLoading"
-    ref="table"
-    >
+  <div v-for="dayTasks, dayTS in tasksByDay" :key="dayTS">
+    <h3>{{ fullDateFormatter.format(dayTS) }}</h3>
+    <el-table
+      :data="dayTasks"
+      :row-class-name="checkHighlight"
+      row-key="id"
+      @row-click="setHighlight"
+      empty-text="Aucune tâche"
+      style="width: 100%"
+      v-loading="areTasksLoading"
+      :ref="dayTS"
+      >
 
-    <el-table-column
-      prop="name"
-      sort-by="startTime"
-      label="Tâche">
-    </el-table-column>
+      <el-table-column
+        prop="name"
+        sort-by="startTime"
+        label="Tâche">
+      </el-table-column>
 
-    <el-table-column
-      align="right"
-      label="Début et fin"
-      width="150">
-      <template #header></template>      
-      <template #default="scope">
-        {{ formatTimestamp(scope.row.startTime)  }} - {{ formatTimestamp(scope.row.endTime) }}
-      </template>
-    </el-table-column>
+      <el-table-column
+        align="right"
+        label="Début et fin"
+        width="150">
+        <template #header></template>      
+        <template #default="scope">
+          {{ formatTimestamp(scope.row.startTime)  }} - {{ formatTimestamp(scope.row.endTime) }}
+        </template>
+      </el-table-column>
 
-    <el-table-column
-      align="right"
-      label="Durée"
-      width="100">
-      <template #header></template>
-      <template #default="scope">
-        {{ durationBetweenTimestamps(scope.row.startTime, scope.row.endTime) }}
-      </template>
-    </el-table-column>
+      <el-table-column
+        align="right"
+        label="Durée"
+        width="100">
+        <template #header></template>
+        <template #default="scope">
+          {{ durationBetweenTimestamps(scope.row.startTime, scope.row.endTime) }}
+        </template>
+      </el-table-column>
 
-    <el-table-column
-      align="right"
-      label="Actions"
-      width="200">      
-      <template #header></template>
-      <template #default="scope">
-        <TaskListActions
-         :taskID="scope.row.id"
-         :taskname="scope.row.name"
-        />
-      </template>
-    </el-table-column>
-    
-  </el-table>
+      <el-table-column
+        align="right"
+        label="Actions"
+        width="200">      
+        <template #header></template>
+        <template #default="scope">
+          <TaskListActions
+          :taskID="scope.row.id"
+          :taskname="scope.row.name"
+          />
+        </template>
+      </el-table-column>
+      
+    </el-table>
+  </div>
+
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import TaskListActions from './TaskListActions.vue'
 
   export default {
@@ -69,14 +73,17 @@
     data() {
       return {        
         tsFormatter: Intl.DateTimeFormat('fr', { hour: '2-digit', minute: '2-digit' }),
+        fullDateFormatter: Intl.DateTimeFormat('fr', { dateStyle: 'full' }),
         defaultSortBy: 'descending',
         sortBy: (this.$route.query.sortBy === 'ascending') ? 'ascending' : 'descending'
       }
     },
     computed: {
       ...mapState([
-        'tasks',
         'areTasksLoading'
+      ]),
+      ...mapGetters([
+        'tasksByDay'
       ])
     },
     watch: {
@@ -84,10 +91,12 @@
         this.$router.push({ query: { sortBy: (newVal === this.defaultSortBy) ? undefined : newVal } })
         this.sortTable()
       },
-      tasks: {
+      tasksByDay: {
         deep: true,
         handler() {
-          this.sortTable()
+          this.$nextTick(() => {
+            this.sortTable()
+          })
         }
       }
     },
@@ -104,7 +113,11 @@
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
       },
       sortTable() {
-        this.$refs.table.sort('name', this.sortBy)
+        console.log(this.tasksByDay)
+        console.log(this.$refs)
+        for (let dayTS in this.tasksByDay) {
+          this.$refs[dayTS].sort('name', this.sortBy)
+        }
       },
       checkHighlight({ row }) {
         if (this.$route.params.taskID && row.id === this.$route.params.taskID) {
@@ -126,5 +139,9 @@
 <style scoped>
 .el-select {
   float: right;
+}
+h3 {
+  text-align: left;
+  text-transform: capitalize;
 }
 </style>

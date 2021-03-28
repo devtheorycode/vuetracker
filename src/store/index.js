@@ -100,6 +100,23 @@ const store = createStore({
     }
 
   },
+  getters: {
+    tasksByDay (state) {
+      if (state.tasks) {
+        const tasksByDay = {}
+        state.tasks.forEach(task => {
+          const currentDayTS = (new Date(task.startTime)).setHours(0, 0, 0, 0)
+          if (!tasksByDay[currentDayTS]) {
+            tasksByDay[currentDayTS] = []
+          }
+          tasksByDay[currentDayTS].push(task)
+        })
+        return tasksByDay
+      } else {
+        return {}
+      }
+    }
+  },
   plugins: import.meta.env.MODE !== 'production' ? [createLogger()] : []
 })
 
