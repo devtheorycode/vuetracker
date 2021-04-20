@@ -1,16 +1,20 @@
 <template>
+
   <TaskListActionsButton @click="copyToClipboard(taskname)">
     Copier
     <i class="el-icon-document-copy" />
   </TaskListActionsButton>
+
   <TaskListActionsButton @click="restartTask(taskID)" type="primary">
     Relancer
     <i class="el-icon-video-play" />
   </TaskListActionsButton>
+
   <TaskListActionsButton @click="deleteTask(taskID)" type="danger" >
     Supprimer
     <i class="el-icon-delete" />
   </TaskListActionsButton>
+
 </template>
 
 <script>

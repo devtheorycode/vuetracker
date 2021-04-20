@@ -16,7 +16,10 @@
 
 <script>
   import { mapState, mapActions } from 'vuex'
+  import TimestampsMixin from '../mixins/timestamps.js'
+
   export default {
+    mixins: [TimestampsMixin],
     data() {
       return {
         nowTime: null,
@@ -107,14 +110,6 @@
         } else {
           this.beforeStartTask()
         }
-      },
-      durationBetweenTimestamps (start, end) {
-        let seconds = Math.floor((end / 1000) - (start / 1000))
-        let minutes = Math.floor(seconds / 60)
-        const hours = Math.floor(minutes / 60)
-        seconds = seconds % 60
-        minutes = minutes % 60
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
       }
     }
   }
