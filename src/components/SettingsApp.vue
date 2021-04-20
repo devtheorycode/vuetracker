@@ -12,33 +12,38 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { ref, watch } from 'vue'
+  import { useStore } from 'vuex'
   import { updateAxiosInstance } from '../services/TaskService.js'
   
-  export default {    
-    data() {
-      return {
-        inputValueJsonBinKey: '',
-        inputValueJsonBinID: '',
-        areNewValuesBeingTested: false
-      }
-    },
-    methods: {
-      ...mapActions({
-        fetchAllTasks: 'tasks/fetchAllTasks',
-        sendSuccess: 'notifications/sendSuccess',
-        sendError: 'notifications/sendError',
-      }),
-      async updateApiValues() {
+  export default {
+    setup () {
+
+      const store = useStore()
+
+      let inputValueJsonBinKey = ref(localStorage.getItem('jsonBinKey') || '')
+      let inputValueJsonBinID = ref(localStorage.getItem('jsonBinID') || '')
+      let isAPIConnected = ref(localStorage.getItem('jsonBinAccess') || false)
+      let areNewValuesBeingTested = ref(false)
+
+      watch(isAPIConnected, (newValue) => {
+        if (newValue) {
+          localStorage.setItem('jsonBinAccess', true)
+        } else {
+          localStorage.removeItem('jsonBinAccess')
+        }
+      })
+
+      let updateApiValues = async function () {
         // Mise à jour des valeurs de JSONBin.io
-        this.areNewValuesBeingTested = true
-        if (this.inputValueJsonBinKey !== '') {
-          localStorage.setItem('jsonBinKey', this.inputValueJsonBinKey)
+        areNewValuesBeingTested.value = true
+        if (inputValueJsonBinKey.value !== '') {
+          localStorage.setItem('jsonBinKey', inputValueJsonBinKey.value)
         } else {
           localStorage.removeItem('jsonBinKey')
         }
-        if (this.inputValueJsonBinID !== '') {
-          localStorage.setItem('jsonBinID', this.inputValueJsonBinID)
+        if (inputValueJsonBinID.value !== '') {
+          localStorage.setItem('jsonBinID', inputValueJsonBinID.value)
         } else {
           localStorage.removeItem('jsonBinID')
         }
@@ -46,32 +51,29 @@
         // Tests dela connexion avec JSONBin.io
         updateAxiosInstance()
         try {
-          await this.fetchAllTasks()
-          localStorage.setItem('jsonBinAccess', true)
-          this.sendSuccess({
+          await store.dispatch('tasks/fetchAllTasks')
+          isAPIConnected.value = true
+          store.dispatch('notifications/sendSuccess', {
             title: 'Succès',
             message: `Vos clés sont enregistrés dans ce navigateur`
           });
         } catch(e) {
-          localStorage.removeItem('jsonBinAccess')
-          this.sendError({
+          isAPIConnected.value = false
+          store.dispatch('notifications/sendError', {
             title: 'Erreur',
             message: `Cette combinaison de fonctionne pas sur JSONBin.io`
           });
         }
-        this.areNewValuesBeingTested = false
+        areNewValuesBeingTested.value = false
       }
-    },
-    created() {
-      // Mise en place des valeurs du localStorage sur l'instance
-      const jsonBinKey = localStorage.getItem('jsonBinKey');
-      const jsonBinID = localStorage.getItem('jsonBinID');
-      if (jsonBinKey) {
-        this.inputValueJsonBinKey = jsonBinKey
+
+      return {
+        inputValueJsonBinKey,
+        inputValueJsonBinID,
+        areNewValuesBeingTested,
+        updateApiValues
       }
-      if (jsonBinID) {
-        this.inputValueJsonBinID = jsonBinID
-      }
+
     }
   }
 </script>
