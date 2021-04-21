@@ -65,13 +65,27 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
   import TaskListActions from './TaskListActions.vue'
-  import TimestampsMixin from '../mixins/timestamps.js'
+  import { useTimestamps } from '../features/useTimestamps.js'
 
   export default {
     components: {
       TaskListActions
     },
-    mixins: [TimestampsMixin],
+    setup() {
+
+      const { 
+        durationBetweenTimestamps,
+        formatTimestamp,
+        fullDateFormatter
+      } = useTimestamps()
+
+      return {
+        durationBetweenTimestamps,
+        formatTimestamp,
+        fullDateFormatter
+      }
+
+    },
     data() {
       return {
         defaultSortBy: 'descending',
