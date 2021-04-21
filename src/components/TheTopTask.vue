@@ -17,19 +17,22 @@
 <script>
   import { mapState, mapActions } from 'vuex'
   import { useTimestamps } from '../features/useTimestamps.js'
+  import { useIncrementalTimer } from '../features/useIncrementalTimer.js'
 
   export default {
-    data() {
-      return {
-        nowTime: null,
-        intervalEverySecond: null,
-        errorMsg: null
-      }
-    },
     setup() {
+      const { nowTime, startTimer, stopTimer } = useIncrementalTimer()
       const { durationBetweenTimestamps } = useTimestamps()
       return {
-        durationBetweenTimestamps
+        durationBetweenTimestamps,
+        nowTime,
+        startTimer,
+        stopTimer
+      }
+    },
+    data() {
+      return {
+        errorMsg: null
       }
     },
     computed: {
@@ -55,15 +58,11 @@
     },
     watch: {
       isTaskInProgress (isInProgress) {
-        if (isInProgress) {          
-          this.nowTime = Date.now()
-          this.intervalEverySecond = setInterval(() => {
-            this.nowTime = Date.now()
-          }, 1000)
-        } else {  
+        if (isInProgress) {
+          this.startTimer()
+        } else {       
           this.errorMsg = null
-          this.nowTime = null
-          clearInterval(this.intervalEverySecond)
+          this.stopTimer()
         }
       },
       errorMsg (newVal) {
