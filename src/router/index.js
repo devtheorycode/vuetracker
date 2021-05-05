@@ -3,6 +3,7 @@ import * as VueRouter from 'vue-router'
 // Pages
 import HomePage from '../pages/Home.vue'
 const LoginPage = () => import('../pages/Login.vue')
+const RegisterPage = () => import('../pages/Register.vue')
 const NotFoundPage = () => import('../pages/NotFound.vue')
 const SettingsPage = () => import('../pages/Settings.vue')
 const SettingsApp = () => import('../components/SettingsApp.vue')
@@ -52,6 +53,11 @@ const router = VueRouter.createRouter({
           return '/'
         }
       }
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: RegisterPage
     },
     {
       path: '/notfound',
