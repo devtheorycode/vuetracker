@@ -9,15 +9,15 @@
 
             <legend>Informations de connexion</legend>
 
-            <label for="email">Adresse email</label>
-            <el-input 
+            <BaseInput
+              label="Adresse email"
               v-model="email"
               placeholder="hello@vuetracker.fr"
               type="email"
               id="email"
               aria-describedby="emailError"
               :aria-invalid="v$.email.$invalid"
-            ></el-input>
+            />
             <el-alert 
               v-if="v$.email.$error" 
               :title="v$.email.$error ? v$.email.$errors[0].$message : ''" 
@@ -26,8 +26,15 @@
               id="emailError"
             ></el-alert>
 
-            <label for="password">Mot de passe</label>
-            <el-input v-model="password" type="password" id="password" aria-describedby="passwordError" :aria-invalid="v$.password.$invalid"></el-input>
+
+            <BaseInput
+              label="Mot de passe"
+              v-model="password"
+              type="password"
+              id="password"
+              aria-describedby="passwordError"
+              :aria-invalid="v$.password.$invalid"
+            />
             <el-alert 
               v-if="v$.password.$error" 
               :title="v$.password.$error ? v$.password.$errors[0].$message : ''" 
@@ -36,8 +43,14 @@
               id="passwordError"
             ></el-alert>
 
-            <label for="passwordConfirm">Confirmation du mot de passe</label>
-            <el-input v-model="passwordConfirm" type="password" id="passwordConfirm" aria-describedby="passwordConfirmError" :aria-invalid="v$.passwordConfirm.$invalid"></el-input>
+            <BaseInput
+              label="Confirmation du mot de passe"
+              v-model="passwordConfirm"
+              type="password"
+              id="passwordConfirm"
+              aria-describedby="passwordConfirmError"
+              :aria-invalid="v$.passwordConfirm.$invalid"
+            />
             <el-alert 
               v-if="v$.passwordConfirm.$error" 
               :title="v$.passwordConfirm.$error ? v$.passwordConfirm.$errors[0].$message : ''" 
@@ -52,7 +65,13 @@
 
             <legend>Finalisation de l'inscription</legend>
           
-            <el-checkbox v-model="termsOfUse" aria-describedby="termsOfUseError" :aria-invalid="v$.termsOfUse.$invalid">Conditions d'utilisation</el-checkbox>
+            <BaseCheckbox
+              v-model="termsOfUse"
+              aria-describedby="termsOfUseError"
+              :aria-invalid="v$.termsOfUse.$invalid"
+            >
+              Conditions d'utilisation
+            </BaseCheckbox>
             <el-alert 
               v-if="v$.termsOfUse.$error" 
               :title="v$.termsOfUse.$error ? v$.termsOfUse.$errors[0].$message : ''" 
@@ -77,14 +96,22 @@
   import { reactive, toRef, toRefs, watch } from 'vue'
   import { useVuelidate } from '@vuelidate/core'
   import { required, email, minLength, sameAsPassword, sameAsTrue } from '../utils/validators.js'
+  import BaseInput from '../components/BaseInput.vue'
+  import BaseCheckbox from '../components/BaseCheckbox.vue'
   export default {
+    components: { 
+      BaseInput,
+      BaseCheckbox
+    },
     setup() {
       const state = reactive({
         email: '',
         password: '',
         passwordConfirm: '',
         termsOfUse: false,
-        loading: false
+        loading: false,
+        fieldValue: '',
+        fieldValueTwo: ''
       })
 
       const rules = {
