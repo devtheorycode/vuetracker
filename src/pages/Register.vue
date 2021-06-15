@@ -109,9 +109,7 @@
         password: '',
         passwordConfirm: '',
         termsOfUse: false,
-        loading: false,
-        fieldValue: '',
-        fieldValueTwo: ''
+        loading: false
       })
 
       const rules = {

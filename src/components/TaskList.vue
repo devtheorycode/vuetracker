@@ -1,63 +1,65 @@
 <template>
 
-  <el-select v-model="sortBy" placeholder="Ordre des tâches">
-    <el-option label="La plus récente d'abord" value="descending"></el-option>
-    <el-option label="La plus ancienne d'abord" value="ascending"></el-option>
-  </el-select>
+  <div style="min-height: 200px" v-loading="areTasksLoading">
 
-  <div v-for="dayTasks, dayTS in tasksByDay" :key="dayTS">
-    <h3>{{ fullDateFormatter.format(dayTS) }}</h3>
-    <el-table
-      :data="dayTasks"
-      :row-class-name="checkHighlight"
-      row-key="id"
-      @row-click="setHighlight"
-      empty-text="Aucune tâche"
-      style="width: 100%"
-      v-loading="areTasksLoading"
-      :ref="dayTS"
-      >
+    <el-select v-model="sortBy" placeholder="Ordre des tâches">
+      <el-option label="La plus récente d'abord" value="descending"></el-option>
+      <el-option label="La plus ancienne d'abord" value="ascending"></el-option>
+    </el-select>
 
-      <el-table-column
-        prop="name"
-        sort-by="startTime"
-        label="Tâche">
-      </el-table-column>
+    <div v-for="dayTasks, dayTS in tasksByDay" :key="dayTS">
+      <h3>{{ fullDateFormatter.format(dayTS) }}</h3>
+      <el-table
+        :data="dayTasks"
+        :row-class-name="checkHighlight"
+        row-key="id"
+        @row-click="setHighlight"
+        empty-text="Aucune tâche"
+        style="width: 100%"      
+        :ref="dayTS"
+        >
 
-      <el-table-column
-        align="right"
-        label="Début et fin"
-        width="150">
-        <template #header></template>      
-        <template #default="scope">
-          {{ formatTimestamp(scope.row.startTime)  }} - {{ formatTimestamp(scope.row.endTime) }}
-        </template>
-      </el-table-column>
+        <el-table-column
+          prop="name"
+          sort-by="startTime"
+          label="Tâche">
+        </el-table-column>
 
-      <el-table-column
-        align="right"
-        label="Durée"
-        width="100">
-        <template #header></template>
-        <template #default="scope">
-          {{ durationBetweenTimestamps(scope.row.startTime, scope.row.endTime) }}
-        </template>
-      </el-table-column>
+        <el-table-column
+          align="right"
+          label="Début et fin"
+          width="150">
+          <template #header></template>      
+          <template #default="scope">
+            {{ formatTimestamp(scope.row.startTime)  }} - {{ formatTimestamp(scope.row.endTime) }}
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        align="right"
-        label="Actions"
-        width="350">      
-        <template #header></template>
-        <template #default="scope">
-          <TaskListActions
-          :taskID="scope.row.id"
-          :taskname="scope.row.name"
-          />
-        </template>
-      </el-table-column>
-      
-    </el-table>
+        <el-table-column
+          align="right"
+          label="Durée"
+          width="100">
+          <template #header></template>
+          <template #default="scope">
+            {{ durationBetweenTimestamps(scope.row.startTime, scope.row.endTime) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          align="right"
+          label="Actions"
+          width="350">      
+          <template #header></template>
+          <template #default="scope">
+            <TaskListActions
+            :taskID="scope.row.id"
+            :taskname="scope.row.name"
+            />
+          </template>
+        </el-table-column>
+        
+      </el-table>
+    </div>
   </div>
 
 </template>

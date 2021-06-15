@@ -47,12 +47,7 @@ const router = VueRouter.createRouter({
     {
       path: '/login',
       name: 'Login',
-      component: LoginPage,
-      beforeEnter: (to, from) => {
-        if (localStorage.getItem('jsonBinAccess')) {
-          return '/'
-        }
-      }
+      component: LoginPage
     },
     {
       path: '/register',
@@ -74,12 +69,12 @@ const router = VueRouter.createRouter({
 })
 
 // Mise en place de la vérification pour chasue route
-router.beforeEach((to, from) => {
-  /* global localStorage */
-  if (to.meta.needJsonBin && !localStorage.getItem('jsonBinAccess')) {
-    return '/settings/app'
-  }
-})
+// router.beforeEach((to, from) => {
+//   /* global localStorage */
+//   if (to.meta.needJsonBin && !localStorage.getItem('jsonBinAccess')) {
+//     return '/settings/app'
+//   }
+// })
 
 // Exportation du router
 export default router
