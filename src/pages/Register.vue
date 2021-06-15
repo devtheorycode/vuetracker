@@ -82,6 +82,12 @@
 
             <div>
               <el-button type="primary" native-type="submit" :loading="loading" @click.prevent="sendForm">Confirmer</el-button>
+              <el-alert 
+                v-if="apiError" 
+                :title="apiError" 
+                type="error"
+                :closable="false"
+              ></el-alert>
             </div>
 
           </fieldset>
@@ -95,21 +101,27 @@
 <script>
   import { reactive, toRef, toRefs, watch } from 'vue'
   import { useVuelidate } from '@vuelidate/core'
+  import * as FirebaseService from '../services/FirebaseService.js'
   import { required, email, minLength, sameAsPassword, sameAsTrue } from '../utils/validators.js'
   import BaseInput from '../components/BaseInput.vue'
   import BaseCheckbox from '../components/BaseCheckbox.vue'
+  import { useRouter } from 'vue-router'
   export default {
     components: { 
       BaseInput,
       BaseCheckbox
     },
     setup() {
+
+      const router = useRouter()
+
       const state = reactive({
         email: '',
         password: '',
         passwordConfirm: '',
         termsOfUse: false,
-        loading: false
+        loading: false,
+        apiError: null
       })
 
       const rules = {
@@ -119,7 +131,7 @@
         },
         password: {
           required,
-          minLength: minLength(4)
+          minLength: minLength(6)
         },
         passwordConfirm: {
           required,
@@ -133,13 +145,18 @@
 
       const v$ = useVuelidate(rules, state, { $autoDirty: true })
 
-      const sendForm = () => {
+      const sendForm = async () => {
         v$.value.$touch()
+        state.apiError = null
         if (!v$.value.$error) {
           state.loading = true
-          setTimeout(() => {
-            state.loading = false
-          }, 1000)
+          const [, errorCode] = await FirebaseService.register(state.email, state.password)
+          if (errorCode) {
+            state.apiError = errorCode
+          } else {
+            router.push('/settings/app')
+          }
+          state.loading = false
         }
       }
 
