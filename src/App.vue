@@ -63,6 +63,7 @@
     },
     methods: {
       ...mapActions({
+        setWatcherCurrentUser: 'users/setWatcherCurrentUser',
         fetchAllTasks: 'tasks/fetchAllTasks',
         updateAllTasks: 'tasks/updateAllTasks',
         sendError: 'notifications/sendError'
@@ -72,6 +73,9 @@
       })
     },
     async created () {
+      // Mise en place de l'actualisation de l'utilisateur actuel
+      this.setWatcherCurrentUser()
+
       // Mise en place du système de notification
       this.SET_NOTIFIER(this.$notify)
 
