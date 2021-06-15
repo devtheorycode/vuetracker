@@ -1,5 +1,6 @@
 <template>
-  <el-container class="mainContainer">
+
+  <el-container v-if="$route.meta.layout === true" class="mainContainer">
 
     <el-aside width="200px">
       <TheMenu />
@@ -22,6 +23,14 @@
     </el-container>
 
   </el-container>
+
+  <div v-else-if="$route.meta.layout === false" class="mainContainer">
+    <h3 class="titleNoLayout">VueTracker</h3>
+    <router-view></router-view>
+  </div>
+
+  <div v-else class="mainContainer" v-loading="true"></div>
+
 </template>
 
 <script>
@@ -108,6 +117,10 @@ body { margin: 0; }
   color: #2c3e50;
 }
 .mainContainer { height: 100%; }
+
+.titleNoLayout {
+  margin: 50px auto;
+}
 
 .el-aside {
   height: 100%;
