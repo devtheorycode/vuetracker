@@ -101,11 +101,11 @@
 <script>
   import { reactive, toRef, toRefs, watch } from 'vue'
   import { useVuelidate } from '@vuelidate/core'
-  import * as FirebaseService from '../services/FirebaseService.js'
   import { required, email, minLength, sameAsPassword, sameAsTrue } from '../utils/validators.js'
   import BaseInput from '../components/BaseInput.vue'
   import BaseCheckbox from '../components/BaseCheckbox.vue'
   import { useRouter } from 'vue-router'
+  import { useStore } from 'vuex'
   export default {
     components: { 
       BaseInput,
@@ -114,6 +114,7 @@
     setup() {
 
       const router = useRouter()
+      const store = useStore()
 
       const state = reactive({
         email: '',
@@ -150,11 +151,14 @@
         state.apiError = null
         if (!v$.value.$error) {
           state.loading = true
-          const [, errorCode] = await FirebaseService.register(state.email, state.password)
-          if (errorCode) {
-            state.apiError = errorCode
-          } else {
+          const res = await store.dispatch('users/register', {
+            email: state.email,
+            password: state.password
+          })
+          if (res === true) {
             router.push('/settings/app')
+          } else {   
+            state.apiError = res
           }
           state.loading = false
         }

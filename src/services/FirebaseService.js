@@ -26,3 +26,21 @@ export async function register (email, password) {
     return [null, error.code]
   }
 }
+
+const errorsTranslations = {
+  'auth/email-already-in-use': 'L\'email indiqué est déjà lié à un compte existant',
+  'auth/invalid-email': 'L\'email n\'a pas un bon format',
+  'auth/operation-not-allowed': 'La connexion via email & mot de passe n\'est pas activée',
+  'auth/weak-password': 'Le mot de passe est trop faible (moins de 6 caractères)',
+  'auth/user-disabled': 'Le compte lié à cet email est désactivé',
+  'auth/user-not-found': 'Le compte lié à cet email n\'existe pas',
+  'auth/wrong-password': 'Le mot de passe ne correspond pas à ce compte'
+}
+
+export function translateErrorCode (errorCode) {
+  if (errorsTranslations[errorCode]) {
+    return errorsTranslations[errorCode]
+  } else {
+    return `Erreur inconnue au sein de Firebase. (${errorCode})`
+  }
+}
