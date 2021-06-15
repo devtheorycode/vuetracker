@@ -47,6 +47,16 @@ export default {
       }
     },
 
+    async logout ({ commit }) {
+      const [, errorCode] = await FirebaseService.logout()
+      if (errorCode) {
+        return FirebaseService.translateErrorCode(errorCode)
+      } else {
+        commit('SET_CURRENT_USER', null)
+        return true
+      }
+    },
+
     setWatcherCurrentUser ({ commit }) {
       FirebaseService.Auth.onAuthStateChanged((user) => {
         commit('SET_CURRENT_USER', user)

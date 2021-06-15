@@ -36,6 +36,15 @@ export async function login (email, password) {
   }
 }
 
+export async function logout () {
+  try {
+    await auth.signOut()
+    return [true, null]
+  } catch (error) {
+    return [null, error.code]
+  }
+}
+
 const errorsTranslations = {
   'auth/email-already-in-use': 'L\'email indiqué est déjà lié à un compte existant',
   'auth/invalid-email': 'L\'email n\'a pas un bon format',
