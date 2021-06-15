@@ -19,6 +19,7 @@ const router = VueRouter.createRouter({
       name: 'Home',
       component: HomePage,
       meta: { layout: true },
+      beforeEnter: [checkLoggedIn, checkJsonBinAccess],
       children: [
         {
           path: 'home/:taskID',
@@ -31,6 +32,7 @@ const router = VueRouter.createRouter({
       name: 'Settings',
       component: SettingsPage,
       meta: { layout: true },
+      beforeEnter: [checkLoggedIn],
       children: [
         {
           path: 'app',
@@ -46,12 +48,14 @@ const router = VueRouter.createRouter({
       path: '/login',
       name: 'Login',
       meta: { layout: false },
+      beforeEnter: [checkNotLoggedIn],
       component: LoginPage
     },
     {
       path: '/register',
       name: 'Register',
       meta: { layout: false },
+      beforeEnter: [checkNotLoggedIn],
       component: RegisterPage
     },
     {
@@ -69,13 +73,25 @@ const router = VueRouter.createRouter({
   ]
 })
 
-// Mise en place de la vérification pour chasue route
-// router.beforeEach((to, from) => {
-//   /* global localStorage */
-//   if (to.meta.needJsonBin && !localStorage.getItem('jsonBinAccess')) {
-//     return '/settings/app'
-//   }
-// })
+/* global localStorage */
+
+function checkLoggedIn () {
+  if (!localStorage.getItem('currentUser')) {
+    return '/login'
+  }
+}
+
+function checkNotLoggedIn () {
+  if (localStorage.getItem('currentUser')) {
+    return '/'
+  }
+}
+
+function checkJsonBinAccess () {
+  if (!localStorage.getItem('jsonBinAccess')) {
+    return '/settings/app'
+  }
+}
 
 // Exportation du router
 export default router
