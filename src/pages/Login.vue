@@ -40,6 +40,12 @@
 
           <div>
             <el-button type="primary" native-type="submit" :loading="loading" @click.prevent="sendForm">Confirmer</el-button>
+            <el-alert 
+                v-if="apiError" 
+                :title="apiError" 
+                type="error"
+                :closable="false"
+              ></el-alert>
           </div>
 
         </form>
@@ -53,15 +59,22 @@
   import { useVuelidate } from '@vuelidate/core'
   import { required, email, minLength } from '../utils/validators.js'
   import BaseInput from '../components/BaseInput.vue'
+  import { useRouter } from 'vue-router'
+  import { useStore } from 'vuex'
   export default {
     components: { 
       BaseInput
     },
     setup() {
+
+      const router = useRouter()
+      const store = useStore()
+
       const state = reactive({
         email: '',
         password: '',
-        loading: false
+        loading: false,
+        apiError: null
       })
 
       const rules = {
@@ -77,13 +90,20 @@
 
       const v$ = useVuelidate(rules, state, { $autoDirty: true })
 
-      const sendForm = () => {
+      const sendForm = async () => {
         v$.value.$touch()
         if (!v$.value.$error) {
           state.loading = true
-          setTimeout(() => {
-            state.loading = false
-          }, 1000)
+          const res = await store.dispatch('users/login', {
+            email: state.email,
+            password: state.password
+          })
+          if (res === true) {
+            router.push('/')
+          } else {   
+            state.apiError = res
+          }
+          state.loading = false
         }
       }
 

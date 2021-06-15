@@ -22,6 +22,16 @@ export default {
         commit('SET_CURRENT_USER', res.user)
         return true
       }
+    },
+
+    async login ({ commit }, { email, password }) {
+      const [res, errorCode] = await FirebaseService.login(email, password)
+      if (errorCode) {
+        return FirebaseService.translateErrorCode(errorCode)
+      } else {
+        commit('SET_CURRENT_USER', res.user)
+        return true
+      }
     }
 
   }
